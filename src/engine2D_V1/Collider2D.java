@@ -112,20 +112,20 @@ public abstract class Collider2D implements HaveTag {
 
     }
     public Point3D getPositionRel(){
-        if(owner == null){
-            return new Point3D(center.x,center.y,center.z);
-        }
-        Rotation3D ownerRotation = owner.getRotation();
-        double ownerDistance = owner.getPosition().distance2D(center);
-
-        return new Point3D(ownerDistance*Math.cos(ownerRotation.z), ownerDistance*Math.sin(ownerRotation.z), this.center.z);
+        return new Point3D(center.x,center.y,center.z);
 
     }
     public Point3D getPositionAbs(){
         if(owner == null){
             return getPositionRel();
         }
-        return getPositionRel().sum(owner.getPosition());
+
+        Point3D posRel = getPositionRel();
+        double rotation = Math.toRadians(owner.getRotation().z) + Math.atan2(posRel.y, posRel.x);
+        Point3D ownerPos = owner.getPosition();
+        double distance = getPositionRel().distance2D(new Point3D(0,0,0));
+
+        return new Point3D(ownerPos.sum(new Point3D(distance*Math.cos(rotation),distance*Math.sin(rotation))));
 
     }
     public double distanceXY(Point3D p){

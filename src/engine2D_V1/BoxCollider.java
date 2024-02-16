@@ -132,22 +132,22 @@ public class BoxCollider extends Collider2D {
         //System.out.println("diagonals: "+diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m + "   " + diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m);
         //System.out.println("rotations: "+Math.toDegrees(Math.atan2(diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m,1))+"    "+Math.toDegrees(Math.atan2(diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m,1)));
 
-        if(diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m != null){
-            rotation = Math.atan2(diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m,1);
-            result[POINT_UP_RIGHT] = new Point3D(pos.x+distance*Math.cos(rotation), pos.y+distance*Math.sin(rotation));
-            result[POINT_DOWN_LEFT] = new Point3D(pos.x-distance*Math.cos(rotation), pos.y-distance*Math.sin(rotation));
+        if(diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m != null){
+            rotation = Math.atan2(diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m,1);
+            result[POINT_DOWN_RIGHT] = new Point3D(pos.x+distance*Math.cos(rotation), pos.y+distance*Math.sin(rotation));
+            result[POINT_UP_LEFT] = new Point3D(pos.x-distance*Math.cos(rotation), pos.y-distance*Math.sin(rotation));
         }else {
             if(INVERTED_Y){
-                result[POINT_UP_RIGHT] = new Point3D(pos.x, pos.y-distance);
-                result[POINT_DOWN_LEFT] = new Point3D(pos.x, pos.y+distance);
+                result[POINT_UP_LEFT] = new Point3D(pos.x, pos.y-distance);
+                result[POINT_DOWN_RIGHT] = new Point3D(pos.x, pos.y+distance);
             }else {
-                result[POINT_UP_RIGHT] = new Point3D(pos.x, pos.y+distance);
-                result[POINT_DOWN_LEFT] = new Point3D(pos.x, pos.y-distance);
+                result[POINT_UP_LEFT] = new Point3D(pos.x, pos.y+distance);
+                result[POINT_DOWN_RIGHT] = new Point3D(pos.x, pos.y-distance);
             }
         }
-        rotation = Math.atan2(diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m,1);
-        result[POINT_DOWN_RIGHT] = new Point3D(pos.x+distance*Math.cos(rotation), pos.y+distance*Math.sin(rotation));
-        result[POINT_UP_LEFT] = new Point3D(pos.x-distance*Math.cos(rotation), pos.y-distance*Math.sin(rotation));
+        rotation = Math.atan2(diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m,1);
+        result[POINT_UP_RIGHT] = new Point3D(pos.x+distance*Math.cos(rotation), pos.y+distance*Math.sin(rotation));
+        result[POINT_DOWN_LEFT] = new Point3D(pos.x-distance*Math.cos(rotation), pos.y-distance*Math.sin(rotation));
 
         //for(int i = 0 ; i < result.length; i++){
         //    System.out.println(result[i].toString());

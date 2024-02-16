@@ -16,11 +16,13 @@ public class Main extends JFrame{
     public static final class MyCanvas extends Canvas{
         Vector<BoxCollider> boxColliders;
         Vector<CircularCollider> circColliders;
+        Vector<EngineObjectModel> objs;
         MyCanvas(){
             setSize(FRAME_WIDTH,FRAME_HEIGHT);
             setBackground(new Color(255,255,255));
             boxColliders = new Vector<>();
             circColliders = new Vector<>();
+            objs = new Vector<>();
         }
 
         @Override
@@ -105,11 +107,19 @@ public class Main extends JFrame{
                         g.setColor(new Color(255,0,0));
                     }
                 }
+                for(int j = 0; j < objs.size(); j++){
+                    if(objs.get(j).collidingWith(objs.get(j))){
+                        for(int l  =0 ; l < objs.get(j).colliders.size(); l++){
+                            if(boxColliders.get(i).isColliding(objs.get(j).colliders.get(l))){
+                                g.setColor(new Color(255,0,0));
+                            }
+                        }
+                    }
+                }
 
 
 
                 BoxCollider currColl = boxColliders.get(i);
-                Vector3D size = currColl.size;
                 if(!Collider2D.INVERTED_Y){
 
                     //g.setColor(new Color(255, 0, 0));
@@ -142,20 +152,28 @@ public class Main extends JFrame{
 
             }
 
-
             for (int i = 0; i < circColliders.size(); i++){
                 g.setColor(new Color(0,0,0));
                 /*
                  */
                 for(int j = 0; j < boxColliders.size(); j++){
-                        if(circColliders.get(i).isColliding(boxColliders.get(j))){
-                            g.setColor(new Color(255,0,0));
-                        }
+                    if(circColliders.get(i).isColliding(boxColliders.get(j))){
+                        g.setColor(new Color(255,0,0));
+                    }
                 }
                 for(int j = 0; j < circColliders.size(); j++){
                     if(circColliders.get(j) != circColliders.get(i)){
                         if(circColliders.get(i).isColliding(circColliders.get(j))){
                             g.setColor(new Color(255,0,0));
+                        }
+                    }
+                }
+                for(int j = 0; j < objs.size(); j++){
+                    if(objs.get(j).collidingWith(objs.get(j))){
+                        for(int l  =0 ; l < objs.get(j).colliders.size(); l++){
+                            if(circColliders.get(i).isColliding(objs.get(j).colliders.get(l))){
+                                g.setColor(new Color(255,0,0));
+                            }
                         }
                     }
                 }
@@ -168,6 +186,83 @@ public class Main extends JFrame{
                     g.fillOval((int) (currColl.getPositionAbs().x), (int) (currColl.getPositionAbs().y),2,2);
                 }
             }
+
+            for(int i = 0; i < objs.size(); i++){
+                g.setColor(new Color(0,0,0));
+
+                for(int j = 0; j < boxColliders.size(); j++){
+                    for(int l = 0 ; l < objs.get(i).colliders.size(); l++){
+                        if(boxColliders.get(j).isColliding(objs.get(i).colliders.get(l))){
+                            g.setColor(new Color(255,0,0));
+                        }
+                    }
+                }
+                for(int j = 0; j < circColliders.size(); j++){
+                    for(int l = 0 ; l < objs.get(i).colliders.size(); l++){
+                        if(circColliders.get(j).isColliding(objs.get(i).colliders.get(l))){
+                            g.setColor(new Color(255,0,0));
+                        }
+                    }
+                }
+                for(int j = 0; j < objs.size(); j++){
+                    if(objs.get(j).collidingWith(objs.get(i))){
+                        if(!objs.get(i).equals(objs.get(j))){
+                            g.setColor(new Color(255,0,0));
+                        }
+                    }
+                }
+                EngineObjectModel currObj = objs.get(i);
+                if(!Collider2D.INVERTED_Y){
+                    g.fillRect((int) (currObj.getPosition().x)-2, (int) (FRAME_HEIGHT-currObj.getPosition().y)-2,4,4);
+                }else {
+                    g.fillRect((int) (currObj.getPosition().x)-2, (int) (currObj.getPosition().y)-2,4,4);
+                }
+
+                for(int j = 0; j < currObj.colliders.size(); j++){
+                    if(currObj.colliders.get(j).type == Collider2D.SQUARE){
+                        BoxCollider currColl = (BoxCollider) currObj.colliders.get(j);
+                        if(!Collider2D.INVERTED_Y){
+
+                            //g.setColor(new Color(255, 0, 0));
+                            g.drawLine((int) currColl.getMostDownLeftPoint().x, FRAME_HEIGHT-(int) currColl.getMostDownLeftPoint().y, (int) currColl.getMostDownRightPoint().x, FRAME_HEIGHT-(int) currColl.getMostDownRightPoint().y);
+                            //g.setColor(new Color(0,255,0));
+                            g.drawLine((int) currColl.getMostUpLeftPoint().x, FRAME_HEIGHT-(int) currColl.getMostUpLeftPoint().y, (int) currColl.getMostUpRightPoint().x, FRAME_HEIGHT-(int) currColl.getMostUpRightPoint().y);
+                            //g.setColor(new Color(0,0,255));
+                            g.drawLine((int) currColl.getMostDownLeftPoint().x, FRAME_HEIGHT-(int) currColl.getMostDownLeftPoint().y, (int) currColl.getMostUpLeftPoint().x, FRAME_HEIGHT-(int) currColl.getMostUpLeftPoint().y);
+                            //g.setColor(new Color(255, 221, 0));
+                            g.drawLine((int) currColl.getMostDownRightPoint().x, FRAME_HEIGHT-(int) currColl.getMostDownRightPoint().y, (int) currColl.getMostUpRightPoint().x, FRAME_HEIGHT-(int) currColl.getMostUpRightPoint().y);
+
+                            //g.setColor(new Color(0,0,0));
+                            g.drawLine((int) currColl.getMostDownRightPoint().x, FRAME_HEIGHT-(int) currColl.getMostDownRightPoint().y, (int) currColl.getMostUpLeftPoint().x, FRAME_HEIGHT-(int) currColl.getMostUpLeftPoint().y);
+                            g.drawLine((int) currColl.getMostDownLeftPoint().x, FRAME_HEIGHT-(int) currColl.getMostDownLeftPoint().y, (int) currColl.getMostUpRightPoint().x, FRAME_HEIGHT-(int) currColl.getMostUpRightPoint().y);
+                        }else {
+                            //g.setColor(new Color(255, 0, 0));
+                            g.drawLine((int) currColl.getMostDownLeftPoint().x, (int) currColl.getMostDownLeftPoint().y, (int) currColl.getMostDownRightPoint().x, (int) currColl.getMostDownRightPoint().y);
+                            //g.setColor(new Color(0,255,0));
+                            g.drawLine((int) currColl.getMostUpLeftPoint().x, (int) currColl.getMostUpLeftPoint().y, (int) currColl.getMostUpRightPoint().x, (int) currColl.getMostUpRightPoint().y);
+                            //g.setColor(new Color(0,0,255));
+                            g.drawLine((int) currColl.getMostDownLeftPoint().x, (int) currColl.getMostDownLeftPoint().y, (int) currColl.getMostUpLeftPoint().x, (int) currColl.getMostUpLeftPoint().y);
+                            //g.setColor(new Color(255, 221, 0));
+                            g.drawLine((int) currColl.getMostDownRightPoint().x, (int) currColl.getMostDownRightPoint().y, (int) currColl.getMostUpRightPoint().x, (int) currColl.getMostUpRightPoint().y);
+
+                            //g.setColor(new Color(0,0,0));
+                            g.drawLine((int) currColl.getMostDownRightPoint().x, (int) currColl.getMostDownRightPoint().y, (int) currColl.getMostUpLeftPoint().x, (int) currColl.getMostUpLeftPoint().y);
+                            g.drawLine((int) currColl.getMostDownLeftPoint().x, (int) currColl.getMostDownLeftPoint().y, (int) currColl.getMostUpRightPoint().x, (int) currColl.getMostUpRightPoint().y);
+
+                        }
+                    }else {
+                        CircularCollider currColl = (CircularCollider) currObj.colliders.get(j);
+                        if(!Collider2D.INVERTED_Y){
+                            g.drawOval((int) (currColl.getPositionAbs().x-currColl.radius), (int) (FRAME_HEIGHT-currColl.getPositionAbs().y-currColl.radius), (int) currColl.radius*2, (int) currColl.radius*2);
+                            g.fillOval((int) (currColl.getPositionAbs().x), (int) (FRAME_HEIGHT-currColl.getPositionAbs().y),2,2);
+                        }else {
+                            g.drawOval((int) (currColl.getPositionAbs().x-currColl.radius), (int) (currColl.getPositionAbs().y-currColl.radius), (int) currColl.radius*2, (int) currColl.radius*2);
+                            g.fillOval((int) (currColl.getPositionAbs().x), (int) (currColl.getPositionAbs().y),2,2);
+                        }
+                    }
+                }
+            }
+
 
         }
     }
@@ -189,23 +284,27 @@ public class Main extends JFrame{
         BoxCollider bColl2;
         CircularCollider cColl1;
         CircularCollider cColl2;
+        EngineObject obj1 = new EngineObject();
         if(!Collider2D.INVERTED_Y){
             bColl1 = new BoxCollider(null,new Point3D(100,750),new Vector3D(50,70));
-            bColl2 = new BoxCollider(null,new Point3D(200,600,0),new Vector3D(30,40));
+            bColl2 = new BoxCollider(null,new Point3D(200,600),new Vector3D(30,40));
             cColl1 = new CircularCollider(null,new Point3D(160,700),30);
-            cColl2 = new CircularCollider(null,new Point3D(370,630,0),75);
+            cColl2 = new CircularCollider(null,new Point3D(370,630),75);
+            obj1.setPosition(new Point3D(30,660));
+            obj1.colliders.add(new BoxCollider(obj1, new Point3D(0,25),new Vector3D(20,20)));
         }else {
             bColl1 = new BoxCollider(null,new Point3D(100,150),new Vector3D(50,70));
             bColl2 = new BoxCollider(null,new Point3D(200,200,0),new Vector3D(30,40));
             cColl1 = new CircularCollider(null,new Point3D(100,100),30);
             cColl2 = new CircularCollider(null,new Point3D(250,330,0),75);
+            obj1.setPosition(new Point3D(30,120));
+            obj1.colliders.add(new BoxCollider(obj1, new Point3D(0,25),new Vector3D(20,20)));
         }
         canvas = new MyCanvas();
         canvas.setFocusable(false);
-        this.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
+        this.addKeyListener(new KeyAdapter() {public void keyReleased(KeyEvent e) {
                 Collider2D collA = bColl1,collB = cColl1;
+                EngineObjectModel obj = obj1;
                 if(e.getKeyChar() == 'a'){
                     collA.setPositionRel(collA.getPositionRel().sum(new Point3D(-10,0,0)));
                 }
@@ -229,10 +328,10 @@ public class Main extends JFrame{
                     }
                 }
 
-                if(e.getKeyChar() == 'z'){
+                if(e.getKeyChar() == 'q'){
                     collA.rotate(5);
                 }
-                if(e.getKeyChar() == 'x'){
+                if(e.getKeyChar() == 'e'){
                     collA.rotate(-5);
                 }
 
@@ -258,11 +357,40 @@ public class Main extends JFrame{
                     }
                 }
 
-                if(e.getKeyChar() == 'm'){
+                if(e.getKeyChar() == 'u'){
                     collB.rotate(5);
                 }
-                if(e.getKeyChar() == ','){
+                if(e.getKeyChar() == 'o'){
                     collB.rotate(-5);
+                }
+
+
+                if(e.getKeyChar() == 'f'){
+                    obj1.setPosition(obj1.getPosition().sum(new Point3D(-10,0,0)));
+                }
+                if(e.getKeyChar() == 'h'){
+                    obj1.setPosition(obj1.getPosition().sum(new Point3D(10,0,0)));
+                }
+                if(e.getKeyChar() == 'g'){
+                    if(!Collider2D.INVERTED_Y){
+                        obj1.setPosition(obj1.getPosition().sum(new Point3D(0,-10,0)));
+                    }else {
+                        obj1.setPosition(obj1.getPosition().sum(new Point3D(0,10,0)));
+                    }
+                }
+                if(e.getKeyChar() == 't'){
+                    if(!Collider2D.INVERTED_Y){
+                        obj1.setPosition(obj1.getPosition().sum(new Point3D(0,10,0)));
+                    }else {
+                        obj1.setPosition(obj1.getPosition().sum(new Point3D(0,-10,0)));
+                    }
+                }
+
+                if(e.getKeyChar() == 'r'){
+                    obj1.rotate(0,0,5);
+                }
+                if(e.getKeyChar() == 'y'){
+                    obj1.rotate(0,0,-5);
                 }
 
 
@@ -284,16 +412,22 @@ public class Main extends JFrame{
                 }
                  */
 
+                System.out.println("obj pos: "+obj.getPosition().toString());
+                System.out.println("coll pos abs: "+obj.colliders.get(0).getPositionAbs().toString());
+                System.out.println("coll pos rel: "+obj.colliders.get(0).getPositionRel().toString());
+                System.out.println("obj rot: "+obj.getRotation().toString());
+                System.out.println("coll rot abs: "+obj.colliders.get(0).getRotationAbs().toString());
+                System.out.println("coll rot rel: "+obj.colliders.get(0).getRotationRel().toString());
+                System.out.println("---------------------------------------------");
                 canvas.paint(canvas.getGraphics());
-            }
-        });
+            }});
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 
         JTextArea instructions = new JTextArea();
         String s;
-        s = "use wasd to mover the rectangle\tuse ijkl to move the circle";
+        s = "commands: wasd+qe | tfgh+ry | ijkl+uo";
         if(Collider2D.INVERTED_Y){
             s = s+"\t!using inverted coordinates!";
         }
@@ -311,6 +445,9 @@ public class Main extends JFrame{
         canvas.boxColliders.add(bColl2);
         canvas.circColliders.add(cColl1);
         canvas.circColliders.add(cColl2);
+        canvas.objs.add(obj1);
+
+
 
 
 
