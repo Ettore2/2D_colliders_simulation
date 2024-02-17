@@ -7,12 +7,12 @@ public class CircularCollider extends Collider2D {
 
     //constructors
     public CircularCollider(EngineObjectModel owner, Point3D center, String tag, double radius) {
-        super(CIRCLE, owner, center, tag);
+        super(owner, center, tag);
         this.radius = radius;
     }
     public CircularCollider(EngineObjectModel owner, Point3D center, double radius) {
-        super(CIRCLE, owner, center);
-        this.radius = radius;
+        this(owner, center, null, radius);
+
     }
 
 
@@ -35,11 +35,11 @@ public class CircularCollider extends Collider2D {
             return false;
         }
 
-        if(col.type == SQUARE){
+        if(col.getClass() == BoxCollider.class){
             return col.isColliding(this);
         }
 
-        if(col.type == CIRCLE){
+        if(col.getClass() == CircularCollider.class){
             return getPositionAbs().distance2D(col.getPositionAbs()) <= this.radius + ((CircularCollider)col).radius;
         }
 

@@ -11,11 +11,11 @@ public class BoxCollider extends Collider2D {
 
     //constructors
     public BoxCollider(EngineObjectModel owner, Point3D center, String tag, Vector3D size) {
-        super(SQUARE, owner, center, tag);
+        super(owner, center, tag);
         this.size = size;
     }
     public BoxCollider(EngineObjectModel owner, Point3D center, Vector3D size) {
-        this(owner, center, "", size);
+        this(owner, center, null, size);
     }
 
 
@@ -219,7 +219,7 @@ public class BoxCollider extends Collider2D {
             return false;
         }
 
-        if(col.type == SQUARE){
+        if(col.getClass() == BoxCollider.class){
             BoxCollider rectCol = (BoxCollider)col;
 
             if(getPositionAbs().distance2D(col.getPositionAbs()) > (size.y+rectCol.size.y)/2/Math.sin(Math.atan2((size.x+rectCol.size.x)/2,(size.y+rectCol.size.y)/2))){
@@ -272,7 +272,7 @@ public class BoxCollider extends Collider2D {
             return false;
         }
 
-        if(col.type == CIRCLE){
+        if(col.getClass() == CircularCollider.class){
             CircularCollider circleCol = (CircularCollider)col;
             //System.out.println("rotation: "+rotation.z);
 

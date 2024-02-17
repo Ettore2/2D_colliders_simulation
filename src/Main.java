@@ -219,7 +219,7 @@ public class Main extends JFrame{
                 }
 
                 for(int j = 0; j < currObj.colliders.size(); j++){
-                    if(currObj.colliders.get(j).type == Collider2D.SQUARE){
+                    if(currObj.colliders.get(j).getClass() == BoxCollider.class){
                         BoxCollider currColl = (BoxCollider) currObj.colliders.get(j);
                         if(!Collider2D.INVERTED_Y){
 
@@ -273,7 +273,6 @@ public class Main extends JFrame{
     public Main(){
         super("colliders simulation");
         //Collider2D.INVERTED_Y = true;
-
 
         setSize(FRAME_WIDTH,FRAME_HEIGHT);
         getContentPane().setLayout(null);

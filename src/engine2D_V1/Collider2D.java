@@ -2,12 +2,9 @@ package engine2D_V1;
 
 
 public abstract class Collider2D implements HaveTag {
+    public static final String DEFAULT_TAG = "collider";
     public static boolean DEFAULT_VISIBILITY = false;
     public static boolean INVERTED_Y = false;
-    public static final int SQUARE = 0, CIRCLE = 1;
-
-
-    public final int type;
     protected String tag;
     protected Point3D center;
     protected Rotation3D rotation;
@@ -16,19 +13,23 @@ public abstract class Collider2D implements HaveTag {
 
 
     //constructors
-    Collider2D(int type, EngineObjectModel owner, Point3D center, String tag){
+    Collider2D(EngineObjectModel owner, Point3D center, String tag){
         this.center = center;
-        this.type = type;
         this.owner = owner;
-        this.tag = tag;
+        if(tag != null){
+            this.tag = tag;
+        }else {
+            this.tag = DEFAULT_TAG;
+        }
+
 
         this.rotation = new Rotation3D(0,0,0);
         isActive = true;
         useRelativePosition = true;
         isVisible = DEFAULT_VISIBILITY;
     }
-    Collider2D(int type, EngineObjectModel owner, Point3D center){
-        this(type, owner, center,  "");
+    Collider2D(EngineObjectModel owner, Point3D center){
+        this(owner, center,  null);
 
     }
 
