@@ -3,17 +3,17 @@ package engine2D_V1;
 import java.util.Objects;
 
 public class Function {
-    public static final double toll = 0.0001f;
+    public static final double TOLLERANCE = 0.0001d;
     Double m;
     double q;
 
 
     //constructors
     public Function(Point3D rotCenter, double degrees, Point3D p1, Point3D p2){
-        if(Math.abs(p1.x - p2.x) < toll){
+        if(Math.abs(p1.x - p2.x) < TOLLERANCE){
             this.m = null;
             this.q = p1.x;
-        }else if(Math.abs(p1.y - p2.y) < toll){
+        }else if(Math.abs(p1.y - p2.y) < TOLLERANCE){
             this.m = 0d;
             this.q = p1.y;
         }else {
@@ -55,10 +55,10 @@ public class Function {
         double distance = distance(rotCenter);
         Point3D newP = new Point3D((double) (distance*Math.cos(Math.toRadians(degrees))), (double) (distance*Math.sin(Math.toRadians(degrees))),0);
 
-        if(Math.abs(degrees%180 - 90) < toll){
+        if(Math.abs(degrees%180 - 90) < TOLLERANCE){
             m = null;
             q = newP.x;
-        }else if(Math.abs(degrees%180) < toll){
+        }else if(Math.abs(degrees%180) < TOLLERANCE){
             m = 0d;
             q = newP.y;
         }else {

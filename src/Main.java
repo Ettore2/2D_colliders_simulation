@@ -412,13 +412,13 @@ public class Main extends JFrame{
                 }
                  */
 
-                System.out.println("obj pos: "+obj.getPosition().toString());
-                System.out.println("coll pos abs: "+obj.colliders.get(0).getPositionAbs().toString());
-                System.out.println("coll pos rel: "+obj.colliders.get(0).getPositionRel().toString());
-                System.out.println("obj rot: "+obj.getRotation().toString());
-                System.out.println("coll rot abs: "+obj.colliders.get(0).getRotationAbs().toString());
-                System.out.println("coll rot rel: "+obj.colliders.get(0).getRotationRel().toString());
-                System.out.println("---------------------------------------------");
+                //System.out.println("obj pos: "+obj.getPosition().toString());
+                //System.out.println("coll pos abs: "+obj.colliders.get(0).getPositionAbs().toString());
+                //System.out.println("coll pos rel: "+obj.colliders.get(0).getPositionRel().toString());
+                //System.out.println("obj rot: "+obj.getRotation().toString());
+                //System.out.println("coll rot abs: "+obj.colliders.get(0).getRotationAbs().toString());
+                //System.out.println("coll rot rel: "+obj.colliders.get(0).getRotationRel().toString());
+                //System.out.println("---------------------------------------------");
                 canvas.paint(canvas.getGraphics());
             }});
         setVisible(true);

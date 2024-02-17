@@ -1,12 +1,11 @@
 package engine2D_V1;
 
-public class Rotation3D{
-    public double x, y, z;
-
+public class Rotation3D extends Size3D{
 
     //constructors
     public Rotation3D(double x, double y, double z){
         set(x, y, z);
+
     }
     public Rotation3D(){
         this(0, 0, 0);
@@ -16,21 +15,19 @@ public class Rotation3D{
         this(x, y, 0);
 
     }
+    public Rotation3D(Rotation3D r){
+        this(r.x, r.y, r.z);
+
+    }
 
 
-    //rotation
+    //other methods
     public void set(Rotation3D r){
         set(r.x, r.y, r.z);
 
     }
-    public void set(double x, double y, double z){
-        this.x = x;
-        this.y = y;
-        this.z = z;
-
-    }
     public Rotation3D copy(){
-        return new Rotation3D(Math.abs(this.x), Math.abs(this.y), Math.abs(this.z));
+        return super.copy().toRotation();
 
     }
     public void add(Rotation3D r){
@@ -38,31 +35,55 @@ public class Rotation3D{
         this.y += r.y;
         this.z += r.z;
     }
-    public Rotation3D sum(Rotation3D r){
-        return new Rotation3D(this.x + r.x, this.y + r.y, this.z + r.z);
+    public Rotation3D sum(double x, double y, double z){
+        return super.sum(x,y,z).toRotation();
 
     }
-    public Rotation3D diff(Rotation3D r){
-        return new Rotation3D(Math.abs(this.x - r.x), Math.abs(this.y - r.y), Math.abs(this.z - r.z));
+    public Rotation3D sum(Vector3D v){
+        return super.sum(v.x,v.y,v.z).toRotation();
+
+    }
+    public Rotation3D sum(Rotation3D r){
+        return super.sum(r.x,r.y,r.z).toRotation();
+
+    }
+    public Rotation3D diffAbs(double x, double y, double z){
+        return super.diffAbs(x,y,z).toRotation();
+
+    }
+    public Rotation3D diffAbs(Rotation3D r){
+        return super.diffAbs(r.x,r.y,r.z).toRotation();
 
     }
     public Rotation3D negative(){
-        return new Rotation3D(-x, -y, -z);
+        return super.negative().toRotation();
+
+    }
+    public boolean equals(Rotation3D r){
+        return equals(r.x,r.y,r.z);
+
+    }
+    public boolean equals(Rotation3D r, double toll){
+        return equals(r.x,r.y,r.z,toll);
 
     }
 
+    //specific methods
+    public double getStrength(){
+        return Math.sqrt(x*x + y*y + z*z);
 
-    //translation methods
-    public Vector3D getVector(){
-        return new Vector3D(x,y,z);
+    }
+    public double getStrength2D(){
+        return Math.sqrt(x*x + y*y);
 
     }
 
     @Override
     public String toString() {
-        return "x: "+x+"\ty: "+y+"\tz: "+z;
+        return "rotation | "+super.toString();
     }
 }
+
 
 
 

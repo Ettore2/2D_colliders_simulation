@@ -1,10 +1,8 @@
 package engine2D_V1;
 
 public class EngineObject extends EngineObjectModel {
-
-
-    public Point3D position;
-    public Rotation3D rotation;
+    public final Point3D position;
+    public final Rotation3D rotation;
 
 
     //constructors
@@ -32,12 +30,12 @@ public class EngineObject extends EngineObjectModel {
     }
     @Override
     public void translate(Vector3D v) {
-        position.add(v.getPoint());
+        position.add(v);
 
     }
     @Override
     public void translate(double x, double y, double z) {
-        position.add(new Point3D(x, y, z));
+        position.add(x, y, z);
 
     }
     @Override
@@ -52,12 +50,12 @@ public class EngineObject extends EngineObjectModel {
     }
     @Override
     public void rotate(Vector3D v) {
-        rotation.add(v.getRotation());
+        rotation.add(v);
 
     }
     @Override
     public void rotate(double x, double y, double z) {
-        rotation.add(new Rotation3D(x, y, z));
+        rotation.add(x, y, z);
 
     }
     @Override
