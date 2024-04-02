@@ -1,5 +1,7 @@
 package engine2D_V1;
 
+import static engine2D_V1.EngineObjectModel.*;
+
 
 public abstract class Collider2D implements HaveTag {
     public static final String DEFAULT_TAG = "collider";
@@ -137,6 +139,7 @@ public abstract class Collider2D implements HaveTag {
         return getPositionAbs().distance(p);
 
     }
+    abstract public int getPositionRelativeToOther(Point3D pos);
 
 
     //HaveTag overrides

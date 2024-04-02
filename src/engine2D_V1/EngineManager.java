@@ -5,6 +5,10 @@ import java.util.Vector;
 
 public class EngineManager {
     private Vector<EngineObjectModel> managedObjects;
+    private Vector<EngineEntityModel> managedEntities;
+    private Vector<EngineObjectModel> toRemoveObjects, toAddObjects;
+    private Vector<EngineEntityModel> toRemoveEntities, toAddEntities;
+    private boolean toRemoveAllObjects, toRemoveAllEntities;
     protected int fps;
     protected double framesDelay;
     protected Date lastExecution;
@@ -20,6 +24,13 @@ public class EngineManager {
      */
     public EngineManager(int fps, boolean deleteTimeExceed){
         this.managedObjects = new Vector<>();
+        this.managedEntities = new Vector<>();
+        this.toRemoveEntities = new Vector<>();
+        this.toAddObjects = new Vector<>();
+        this.toRemoveObjects = new Vector<>();
+        this.toAddEntities = new Vector<>();
+        toRemoveAllObjects = false;
+        toRemoveAllEntities = false;
         this.setFps(fps);
         this.lastExecution = new Date();
         this.frameTimer = 0;
@@ -60,19 +71,22 @@ public class EngineManager {
      * needs to be called enough for the frameRate to be constant but not enough to saturate teh cpu
      */
     synchronized public void doCycle(){
+        Date start = new Date();
         //debug("do updates");
         doLogicUpdates(framesDelay);
         //debug("doneLogicUpdates");
         doCollisions(framesDelay);
         //debug("doneCollisions");
-        doPostCollisionUpdates(framesDelay);
-        //debug("donePostCollisionUpdates");
-        doGraphicUpdates(framesDelay);
-        //debug("doneGraphicUpdates");
-        doPostGraphicUpdates(framesDelay);
-        //debug("doPostGraphicUpdates");
+        doFinalUpdates(framesDelay);
+        Date end = new Date();
 
+        updateManagedThings();
+        //debug("doCle framesDelay: "+framesDelay+" doCle duration: "+(end.getTime() - start.getTime()));
+        //debug("managed objects: "+managedObjects.size()+" managed entities: "+managedEntities.size());
+        //debug("doCycle end##########################");
     }
+
+
     synchronized public boolean shouldCycle(){
         updateTimer();
 
@@ -90,28 +104,70 @@ public class EngineManager {
      * returns true if the object was not already been added
      */
     synchronized public boolean addObject(EngineObjectModel obj){
+        if(!managedObjects.contains(obj) && !toAddObjects.contains(obj)){
+            toAddObjects.add(obj);
+            return true;
+        }
+        return false;
+
+    }
+    synchronized public boolean addObjectInstantly(EngineObjectModel obj){
         if(managedObjects.contains(obj)){
             return false;
         }
         managedObjects.add(obj);
         return true;
     }
-    /**
-     * returns true if the object was managed by this manager
-     */
-    synchronized public boolean removeObject(EngineObjectModel obj){
-        if(managedObjects.contains(obj)){
-            managedObjects.remove(obj);
+    synchronized public boolean addEntity(EngineEntityModel ent){
+        if(!managedEntities.contains(ent) && !toAddEntities.contains(ent)){
+            toAddEntities.add(ent);
             return true;
         }
         return false;
     }
+    synchronized public boolean addEntityInstantly(EngineEntityModel ent){
+        if(managedEntities.contains(ent)){
+            return false;
+        }
+        managedEntities.add(ent);
+        return true;
+    }
+    /**
+     * returns true if the object was managed by this manager
+     */
+    synchronized public boolean removeObject(EngineObjectModel obj){
+        if(managedObjects.contains(obj) && !toRemoveObjects.contains(obj)){
+            toRemoveObjects.add(obj);
+            return true;
+        }
+        return false;
+    }
+    synchronized public boolean removeEntity(EngineEntityModel ent){
+        if(managedEntities.contains(ent) && !toRemoveEntities.contains(ent)){
+            toRemoveEntities.add(ent);
+            return true;
+        }
+        return false;
+    }
+    synchronized public void removeAll(){
+        toRemoveAllObjects = true;
+        toRemoveAllEntities = true;
+
+    }
     synchronized public void removeAllObjects(){
-        managedObjects.clear();
+        toRemoveAllObjects = true;
+
+    }
+    synchronized public void removeAllEntities(){
+        toRemoveAllEntities = true;
 
     }
     synchronized public Vector<EngineObjectModel> getManagedObjects(){
         return  managedObjects;
+
+    }
+    synchronized public Vector<EngineEntityModel> getManagedEntities(){
+        return managedEntities;
 
     }
     /**
@@ -122,6 +178,57 @@ public class EngineManager {
             return true;
         }
         return false;
+    }
+    synchronized public boolean manageEntity(EngineEntityModel ent){
+        if(managedEntities.contains(ent)){
+            return true;
+        }
+        return false;
+    }
+    synchronized  public void updateManagedThings(){
+        //add and remove objects
+        if(toRemoveAllObjects){
+            toRemoveObjects.clear();
+            managedObjects.clear();
+            toRemoveAllObjects = false;
+        }else {
+            while (!toRemoveObjects.isEmpty()){
+                if(managedObjects.contains(toRemoveObjects.get(0))){
+                    managedObjects.remove(toRemoveObjects.remove(0));
+                }else {
+                    toRemoveObjects.remove(0);
+                }
+            }
+        }
+        while (!toAddObjects.isEmpty()){
+            if(!managedObjects.contains(toAddObjects.get(0))){
+                managedObjects.add(toAddObjects.remove(0));
+            }else {
+                toAddObjects.remove(0);
+            }
+        }
+
+        //add and remove entities
+        if(toRemoveAllEntities){
+            toRemoveEntities.clear();
+            managedEntities.clear();
+            toRemoveAllEntities = false;
+        }else {
+            while (!toRemoveEntities.isEmpty()) {
+                if (managedEntities.contains(toRemoveEntities.get(0))) {
+                    managedEntities.remove(toRemoveEntities.remove(0));
+                } else {
+                    toRemoveEntities.remove(0);
+                }
+            }
+        }
+        while (!toAddEntities.isEmpty()){
+            if(!managedEntities.contains(toAddEntities.get(0))){
+                managedEntities.add(toAddEntities.remove(0));
+            }else {
+                toAddEntities.remove(0);
+            }
+        }
     }
 
 
@@ -134,6 +241,9 @@ public class EngineManager {
     protected void doLogicUpdates(double deltaT){
         for (int i = 0; i < managedObjects.size(); i++){
             managedObjects.get(i).logicUpdate(deltaT);
+        }
+        for (int i = 0; i < managedEntities.size(); i++){
+            managedEntities.get(i).logicUpdate(deltaT);
         }
     }
 
@@ -157,21 +267,10 @@ public class EngineManager {
             }
         }
     }
-    protected void doPostCollisionUpdates(double deltaT){
+    private void doFinalUpdates(double deltaT) {
         for (int i = 0; i < managedObjects.size(); i++){
             managedObjects.get(i).postCollisionUpdate(deltaT);
-        }
-    }
-    protected void doGraphicUpdates(double deltaT){
-        for (int i = 0; i < managedObjects.size(); i++){
-            if(managedObjects.get(i).needGraphicUpdate){
-                managedObjects.get(i).graphicUpdate(deltaT);
-            }
-
-        }
-    }
-    protected void doPostGraphicUpdates(double deltaT){
-        for (int i = 0; i < managedObjects.size(); i++){
+            managedObjects.get(i).graphicUpdate(deltaT);
             managedObjects.get(i).postGraphicUpdate(deltaT);
         }
     }

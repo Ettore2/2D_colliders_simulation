@@ -2,9 +2,10 @@ package engine2D_V1;
 
 import java.util.Vector;
 
-public abstract class EngineObjectModel implements HaveTag{
+public abstract class EngineObjectModel implements HaveTag, HaveTransform{
     public static final String DEFAULT_TAG = "gameObject";
     public static final int DIR_STOP = 0, DIR_UP = 1, DIR_DOWN = -DIR_UP, DIR_RIGHT = 2, DIR_LEFT = -DIR_RIGHT;
+    public static final int DIR_UP_LEFT = 2,DIR_UP_RIGHT = 3, DIR_DOWN_LEFT = -3,DIR_DOWN_RIGHT = -2;
 
     public boolean needGraphicUpdate;
 
@@ -15,9 +16,9 @@ public abstract class EngineObjectModel implements HaveTag{
 
     //constructors
     public EngineObjectModel(String tag){
-        this.tag = tag;
-        colliders = new Vector<>();
+        setTag(tag);
 
+        colliders = new Vector<>();
         needGraphicUpdate = true;
 
     }
@@ -42,17 +43,6 @@ public abstract class EngineObjectModel implements HaveTag{
     public void postGraphicUpdate(double deltaT){}
 
 
-    //position and rotation methods
-    public abstract void setPosition(Point3D p);
-    public abstract void translate(Vector3D v);
-    public abstract void translate(double x, double y, double z);
-    public abstract Point3D getPosition();
-    public abstract void setRotation(Rotation3D r);
-    public abstract void rotate(Vector3D v);
-    public abstract void rotate(double x, double y, double z);
-    public abstract Rotation3D getRotation();
-
-
     //otherMethods
     public boolean canCollide(){
         boolean canCollide = false;
@@ -64,6 +54,17 @@ public abstract class EngineObjectModel implements HaveTag{
         }
         return false;
     }
+    public double distance2D(EngineObjectModel obj){
+        return this.getPosition().distance2D(obj.getPosition());
+    }
+    public double distance(EngineObjectModel obj){
+        return this.getPosition().distance(obj.getPosition());
+    }
+    public void setActiveOnColliders(boolean isActive){
+        for(int i = 0; i < colliders.size(); i++){
+            colliders.get(i).isActive = isActive;
+        }
+    }
 
 
     //HaveTag overrides
@@ -74,7 +75,11 @@ public abstract class EngineObjectModel implements HaveTag{
     }
     @Override
     public void setTag(String tag) {
-        this.tag = tag;
+        if(tag == null){
+            this.tag = DEFAULT_TAG;
+        }else {
+            this.tag = tag;
+        }
 
     }
 }

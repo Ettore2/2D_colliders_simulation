@@ -5,12 +5,14 @@ import java.util.Vector;
 public class BaseAnimation <E> {
     private Vector<AnimationFrame> animFrames;
     private double timer;
+    public double speed;
     private int currFrame;
 
 
     //constructors
     public BaseAnimation(Vector<AnimationFrame> frames){
         this.animFrames = frames;
+        this.speed = 1;
 
         timer = 0;
         currFrame = 0;
@@ -29,12 +31,18 @@ public class BaseAnimation <E> {
     //other methods
     public AnimationFrame<E> update(double deltaT){
         if(deltaT >= 0){
-            timer += deltaT;
+            timer += deltaT*speed;
 
             if(timer >= animFrames.get(currFrame).duration){
-                timer -= animFrames.get(currFrame).duration;
-                currFrame = (currFrame + 1)% animFrames.size();
-
+                while (timer >= animFrames.get(currFrame).duration){
+                    timer -= animFrames.get(currFrame).duration;
+                    currFrame = (currFrame + 1)% animFrames.size();
+                }
+            } else if (timer < 0) {
+                while (timer < 0){
+                    currFrame = (currFrame - 1 + animFrames.size())% animFrames.size();
+                    timer += animFrames.get(currFrame).duration;
+                }
             }
         }
 

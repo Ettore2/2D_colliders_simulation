@@ -1,7 +1,5 @@
 package engine2D_V1;
 
-import java.util.Vector;
-
 public class Vector3D extends Size3D{
     public static final Vector3D V_UP = new Vector3D(1,0,0), V_DOWN = new Vector3D(-1,0,0),
             V_LEFT = new Vector3D(0,-1,0), V_RIGHT = new Vector3D(0,1,0);
@@ -20,14 +18,24 @@ public class Vector3D extends Size3D{
 
     }
     public Vector3D(Vector3D v){
-        this(v.x, v.y, v.z);
+        if(v != null){
+            set(v.x, v.y, v.z);
+        }else {
+            set(0,0,0);
+        }
+
 
     }
 
 
     //other methods
     public void set(Vector3D v){
-        set(v.x, v.y, v.z);
+        if( v != null){
+            set(v.x, v.y, v.z);
+        }else {
+            set(0,0,0);
+        }
+
 
     }
     public Vector3D copy(){
@@ -39,7 +47,10 @@ public class Vector3D extends Size3D{
 
     }
     public Vector3D sum(Vector3D v){
-        return super.sum(v.x,v.y,v.z).toVector();
+        if(v != null){
+            return super.sum(v.x,v.y,v.z).toVector();
+        }
+        return new Vector3D(this);
 
     }
     public Vector3D diffAbs(double x, double y, double z){
@@ -47,7 +58,10 @@ public class Vector3D extends Size3D{
 
     }
     public Vector3D diffAbs(Vector3D v){
-        return new Vector3D(Math.abs(this.x - v.x), Math.abs(this.y - v.y), Math.abs(this.z - v.z));
+        if(v != null){
+            return new Vector3D(Math.abs(this.x - v.x), Math.abs(this.y - v.y), Math.abs(this.z - v.z));
+        }
+        return new Vector3D(Math.abs(this.x), Math.abs(this.y), Math.abs(this.z));
 
     }
     public Vector3D negative(){
@@ -55,10 +69,16 @@ public class Vector3D extends Size3D{
 
     }
     public boolean equals(Vector3D v){
+        if(v == null){
+            return false;
+        }
         return equals(v.x,v.y,v.z);
 
     }
     public boolean equals(Vector3D v, double toll){
+        if(v == null){
+            return false;
+        }
         return equals(v.x,v.y,v.z,toll);
 
     }
@@ -70,6 +90,18 @@ public class Vector3D extends Size3D{
     }
     public double getStrength2D(){
         return Math.sqrt(x*x + y*y);
+
+    }
+    public Vector3D scaledInstance(double scale){
+        return new Vector3D(x*scale,y*scale,z*scale);
+
+    }
+    public double getAngleRad(){
+        return Math.atan2(y,x);
+
+    }
+    public double getAngleDeg(){
+        return Math.toDegrees(Math.atan2(y,x));
 
     }
 

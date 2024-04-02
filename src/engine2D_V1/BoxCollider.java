@@ -1,5 +1,7 @@
 package engine2D_V1;
 
+import static engine2D_V1.EngineObjectModel.*;
+
 public class BoxCollider extends Collider2D {
     public static final int FUNCTION_UP = 0,FUNCTION_RIGHT = 1,FUNCTION_DOWN = 2,FUNCTION_LEFT = 3;
     public static final int POINT_UP_RIGHT = 0,POINT_DOWN_RIGHT = 1,POINT_DOWN_LEFT = 2,POINT_UP_LEFT = 3,POINT_CENTER = 5;
@@ -16,6 +18,9 @@ public class BoxCollider extends Collider2D {
     }
     public BoxCollider(EngineObjectModel owner, Point3D center, Vector3D size) {
         this(owner, center, null, size);
+    }
+    public BoxCollider(EngineObjectModel owner, Point3D upLeftP, Point3D downRightP) {
+        this(owner, new Point3D(upLeftP.x + (downRightP.x-upLeftP.x)/2,upLeftP.y + (downRightP.y-upLeftP.y)/2), null, new Vector3D(Math.abs(downRightP.x-upLeftP.x),Math.abs(downRightP.y-upLeftP.y),0));
     }
 
 
@@ -208,6 +213,61 @@ public class BoxCollider extends Collider2D {
     @Override
     public double getArea() {
         return size.x * size.y;
+
+    }
+    @Override
+    public int getPositionRelativeToOther(Point3D pos) {
+        Function[] f = getFunctions();
+        boolean[] results = new boolean[4];
+
+        for(int j = 0; j < f.length; j++){
+            results[j] = f[j].isPointUnder(pos);
+
+        }
+
+        if(results[FUNCTION_DOWN] != results[FUNCTION_UP] || f[FUNCTION_DOWN].isPointOwned(pos) || f[FUNCTION_UP].isPointOwned(pos)){
+            if(results[FUNCTION_LEFT] != results[FUNCTION_RIGHT] || f[FUNCTION_RIGHT].isPointOwned(pos) || f[FUNCTION_LEFT].isPointOwned(pos)){
+                return DIR_STOP;
+            }else if(results[FUNCTION_RIGHT]){
+                return DIR_RIGHT;
+            }else {
+                return DIR_LEFT;
+            }
+        }else if(results[FUNCTION_UP]){
+            if(results[FUNCTION_LEFT] != results[FUNCTION_RIGHT] || f[FUNCTION_RIGHT].isPointOwned(pos) || f[FUNCTION_LEFT].isPointOwned(pos)){
+                if(INVERTED_Y){
+                    return DIR_UP;
+                }
+                return DIR_DOWN;
+            }else if(results[FUNCTION_RIGHT]){
+                if(INVERTED_Y){
+                    return DIR_UP_RIGHT;
+                }
+                return DIR_DOWN_RIGHT;
+            }else {
+                if(INVERTED_Y){
+                    return DIR_UP_LEFT;
+                }
+                return DIR_DOWN_LEFT;
+            }
+        }else {
+            if(results[FUNCTION_LEFT] != results[FUNCTION_RIGHT] || f[FUNCTION_RIGHT].isPointOwned(pos) || f[FUNCTION_LEFT].isPointOwned(pos)){
+                if(INVERTED_Y){
+                    return DIR_DOWN;
+                }
+                return DIR_UP;
+            }else if(results[FUNCTION_RIGHT]){
+                if(INVERTED_Y){
+                    return DIR_DOWN_RIGHT;
+                }
+                return DIR_UP_RIGHT;
+            }else {
+                if(INVERTED_Y){
+                    return DIR_DOWN_RIGHT;
+                }
+                return DIR_UP_LEFT;
+            }
+        }
 
     }
 

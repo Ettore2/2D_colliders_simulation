@@ -36,7 +36,10 @@ class Size3D {
         this.z += z;
     }
     public void add(Vector3D v){
-        add(v.x,v.y,v.z);
+        if(v != null){
+            add(v.x,v.y,v.z);
+        }
+
 
     }
     public Size3D sum(double x, double y, double z){
@@ -44,7 +47,10 @@ class Size3D {
 
     }
     public Size3D sum(Vector3D v){
-        return sum(v.x,v.y,v.z);
+        if(v != null){
+            return sum(v.x,v.y,v.z);
+        }
+        return sum(0,0,0);
 
     }
     public Size3D diffAbs(double x, double y, double z){

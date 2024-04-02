@@ -16,14 +16,24 @@ public class Point3D extends Size3D{
 
     }
     public Point3D(Point3D v){
-        this(v.x, v.y, v.z);
+        if(v == null){
+            set(0, 0, 0);
+        }else {
+            set(v.x, v.y, v.z);
+        }
+
 
     }
 
 
     //other methods
     public void set(Point3D v){
-        set(v.x, v.y, v.z);
+        if(v == null){
+            set(0,0,0);
+        }else {
+            set(v.x, v.y, v.z);
+        }
+
 
     }
     public Point3D copy(){
@@ -31,20 +41,24 @@ public class Point3D extends Size3D{
 
     }
     public void add(Point3D v){
-        this.x += v.x;
-        this.y += v.y;
-        this.z += v.z;
+        if(v != null){
+            add(v.x, v.y, v.z);
+        }
     }
     public Point3D sum(double x, double y, double z){
         return super.sum(x,y,z).toPoint();
 
     }
     public Point3D sum(Vector3D v){
-        return super.sum(v.x,v.y,v.z).toPoint();
+        return super.sum(v).toPoint();
 
     }
     public Point3D sum(Point3D p){
-        return super.sum(p.x,p.y,p.z).toPoint();
+        if(p != null){
+            return super.sum(p.x,p.y,p.z).toPoint();
+        }
+        return super.sum(0,0,0).toPoint();
+
 
     }
     public Point3D diffAbs(double x, double y, double z){
@@ -52,7 +66,10 @@ public class Point3D extends Size3D{
 
     }
     public Point3D diffAbs(Point3D p){
-        return super.diffAbs(p.x, p.y, p.z).toPoint();
+        if(p != null){
+            return super.diffAbs(p.x, p.y, p.z).toPoint();
+        }
+        return super.diffAbs(0,0,0).toPoint();
 
     }
     public Point3D negative(){
@@ -60,10 +77,16 @@ public class Point3D extends Size3D{
 
     }
     public boolean equals(Point3D p){
+        if(p == null){
+            return false;
+        }
         return equals(p.x,p.y,p.z);
 
     }
     public boolean equals(Point3D p, double toll){
+        if(p == null){
+            return false;
+        }
         return equals(p.x,p.y,p.z,toll);
 
     }
@@ -75,7 +98,10 @@ public class Point3D extends Size3D{
 
     }
     public double distance(Point3D p){
-        return distance(p.x,p.y,p.z);
+        if(p != null){
+            return distance(p.x,p.y,p.z);
+        }
+        return distance(0,0,0);
 
     }
     public double distance2D(double x, double y){
@@ -83,7 +109,10 @@ public class Point3D extends Size3D{
 
     }
     public double distance2D(Point3D p){
-        return distance2D(p.x,p.y);
+        if (p != null){
+            return distance2D(p.x,p.y);
+        }
+        return distance2D(0,0);
 
     }
 

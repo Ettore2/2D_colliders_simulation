@@ -16,14 +16,23 @@ public class Rotation3D extends Size3D{
 
     }
     public Rotation3D(Rotation3D r){
-        this(r.x, r.y, r.z);
+        if(r != null){
+            set(r.x, r.y, r.z);
+        }else {
+            set(0,0,0);
+        }
 
     }
 
 
     //other methods
     public void set(Rotation3D r){
-        set(r.x, r.y, r.z);
+        if(r != null){
+            set(r.x, r.y, r.z);
+        }else {
+            set(0,0,0);
+        }
+
 
     }
     public Rotation3D copy(){
@@ -40,11 +49,17 @@ public class Rotation3D extends Size3D{
 
     }
     public Rotation3D sum(Vector3D v){
-        return super.sum(v.x,v.y,v.z).toRotation();
+        if(v != null){
+            return super.sum(v.x,v.y,v.z).toRotation();
+        }
+        return super.sum(0,0,0).toRotation();
 
     }
     public Rotation3D sum(Rotation3D r){
-        return super.sum(r.x,r.y,r.z).toRotation();
+        if(r != null) {
+            return super.sum(r.x,r.y,r.z).toRotation();
+        }
+        return super.sum(0,0,0).toRotation();
 
     }
     public Rotation3D diffAbs(double x, double y, double z){
@@ -52,7 +67,10 @@ public class Rotation3D extends Size3D{
 
     }
     public Rotation3D diffAbs(Rotation3D r){
-        return super.diffAbs(r.x,r.y,r.z).toRotation();
+        if( r != null){
+            return super.diffAbs(r.x,r.y,r.z).toRotation();
+        }
+        return super.diffAbs(0,0,0).toRotation();
 
     }
     public Rotation3D negative(){
@@ -60,10 +78,16 @@ public class Rotation3D extends Size3D{
 
     }
     public boolean equals(Rotation3D r){
+        if(r == null){
+            return false;
+        }
         return equals(r.x,r.y,r.z);
 
     }
     public boolean equals(Rotation3D r, double toll){
+        if(r == null){
+            return false;
+        }
         return equals(r.x,r.y,r.z,toll);
 
     }
