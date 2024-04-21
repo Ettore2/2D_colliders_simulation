@@ -282,7 +282,7 @@ public class BoxCollider extends Collider2D {
         if(col.getClass() == BoxCollider.class){
             BoxCollider rectCol = (BoxCollider)col;
 
-            if(getPositionAbs().distance2D(col.getPositionAbs()) > (size.y+rectCol.size.y)/2/Math.sin(Math.atan2((size.x+rectCol.size.x)/2,(size.y+rectCol.size.y)/2))){
+            if(getPositionAbs().distance2D(col.getPositionAbs()) > Math.sqrt((size.x+rectCol.size.x)*(size.x+rectCol.size.x)+(size.y+rectCol.size.y)*(size.y+rectCol.size.y))/2){
                 //System.out.println(getPositionAbs().distance2D(col.getPositionAbs()) +"  "+ ((size.y+rectCol.size.y)/2/Math.sin(Math.atan2((size.x+rectCol.size.x)/2,(size.y+rectCol.size.y)/2))));
                 //System.out.println("fast false");
                 return false;
@@ -336,8 +336,8 @@ public class BoxCollider extends Collider2D {
             CircularCollider circleCol = (CircularCollider)col;
             //System.out.println("rotation: "+rotation.z);
 
-            if(getPositionAbs().distance2D(col.getPositionAbs()) > (circleCol.radius+size.y/2)/Math.sin(Math.atan2(size.y,size.x))){
-                //7System.out.println("fast false");
+            if(getPositionAbs().distance2D(col.getPositionAbs()) > (circleCol.radius)+Math.sqrt((size.x*size.x+size.y*size.y))/2){
+                //System.out.println("fast false");
                 return false;
             }
 
