@@ -3,7 +3,7 @@ package engine2D_V1;
 import java.util.Objects;
 
 public class Function {
-    public static final double TOLLERANCE = 0.0001d;
+    public static final double TOLLERANCE = 0.001d;
     Double m;
     double q;
 
@@ -76,6 +76,7 @@ public class Function {
     }
     public double getImage(double x){
         return getImagePoint(x).y;
+
     }
     public Point3D getImagePoint(double x){
         if(m == null){
@@ -85,18 +86,37 @@ public class Function {
         }
 
     }
+    public double getCounterImage(double y){
+        return getCounterImagePoint(y).x;
+
+    }
+    public Point3D getCounterImagePoint(double y){
+        if(m == null){
+            return new Point3D(q,y);
+        }else if(m == 0){
+            return new Point3D(y,q);
+        }else {
+            return new Point3D((y-q)/m,y);
+        }
+
+    }
     public Point3D getIntersection(Function f){
         if(Objects.equals(f.m, this.m)){
+            if(this.q == f.q){
+                return new Point3D(0,q);
+            }
             return null;
         }
 
         if(this.m == null){
             return new Point3D(this.q,f.getImage(this.q));
-        }else if(f.m == null){
-            return new Point3D(f.q,this.getImage(f.q));
         }else{
-            double x = (f.q-this.q)/(this.m - f.m);
-            return new Point3D(x,getImage(x));
+            if(f.m == null){
+                return new Point3D(f.q,this.getImage(f.q));
+            }else{
+                double x = (f.q-this.q)/(this.m - f.m);
+                return new Point3D(x,getImage(x));
+            }
         }
 
     }

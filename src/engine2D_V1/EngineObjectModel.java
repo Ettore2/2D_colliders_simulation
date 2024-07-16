@@ -26,14 +26,18 @@ public abstract class EngineObjectModel implements HaveTag, HaveTransform{
 
     //states methods
     public boolean collidingWith(EngineObjectModel obj){
+        //debug("collidingWith "+this.tag+"*"+obj.tag);
         for(int i = 0; i < colliders.size(); i++){
             for(int j = 0; j < obj.colliders.size(); j++){
+                //debug("i: "+i+" j: "+j);
                 if(colliders.get(i).isColliding(obj.colliders.get(j))){
+
+                    //debug("ret true");
                     return true;
                 }
             }
         }
-
+        //debug("ret false");
         return false;
     }
     public void logicUpdate(double deltaT){}
@@ -45,7 +49,6 @@ public abstract class EngineObjectModel implements HaveTag, HaveTransform{
 
     //otherMethods
     public boolean canCollide(){
-        boolean canCollide = false;
 
         for(int i = 0; i < colliders.size(); i++){
             if(colliders.get(i).isActive){
@@ -65,6 +68,15 @@ public abstract class EngineObjectModel implements HaveTag, HaveTransform{
             colliders.get(i).isActive = isActive;
         }
     }
+    public static boolean checkCollisionMask(EngineObjectModel objA, EngineObjectModel objB){
+        return objA.collisionMask(objB) && objB.collisionMask(objA);
+
+    }
+    public boolean collisionMask(EngineObjectModel obj){
+        return true;
+
+    }
+
 
 
     //HaveTag overrides

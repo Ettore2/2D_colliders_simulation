@@ -1,6 +1,5 @@
 package engine2D_V1;
 
-
 public abstract class ParticleModel extends EngineEntityModel{
     public static final String DEFAULT_TAG = "particles";
     public static final double DO_NOT_FADE = -1;
@@ -8,7 +7,7 @@ public abstract class ParticleModel extends EngineEntityModel{
 
     protected EngineManager engine;
     protected final Vector3D force, forceAcc;
-    protected double angForce, angAcc;
+    protected double angForce, angAcc;//force of rotation
     protected final Point3D pos;
     protected final Rotation3D rot;
     protected double lifeTime;

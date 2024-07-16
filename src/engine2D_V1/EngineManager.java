@@ -1,5 +1,4 @@
 package engine2D_V1;
-
 import java.util.Date;
 import java.util.Vector;
 
@@ -17,7 +16,6 @@ public class EngineManager {
 
 
     //constructors
-
     /**
      *
      * @param fps frames executed every second
@@ -71,19 +69,23 @@ public class EngineManager {
      * needs to be called enough for the frameRate to be constant but not enough to saturate teh cpu
      */
     synchronized public void doCycle(){
-        Date start = new Date();
+        //Date start = new Date();
         //debug("do updates");
         doLogicUpdates(framesDelay);
         //debug("doneLogicUpdates");
         doCollisions(framesDelay);
         //debug("doneCollisions");
         doFinalUpdates(framesDelay);
-        Date end = new Date();
+        //Date end = new Date();
 
         updateManagedThings();
         //debug("doCle framesDelay: "+framesDelay+" doCle duration: "+(end.getTime() - start.getTime()));
         //debug("managed objects: "+managedObjects.size()+" managed entities: "+managedEntities.size());
         //debug("doCycle end##########################");
+    }
+    protected boolean allowCollision(EngineObjectModel a,EngineObjectModel b){
+        return true;
+
     }
 
 
@@ -258,7 +260,7 @@ public class EngineManager {
                 for(int j = i+1; j < managedObjects.size(); j++){
                     //debug("  "+i +" "+j);
                     obj2 = managedObjects.get(j);
-                    if(obj1.collidingWith(managedObjects.get(j))){
+                    if(allowCollision(obj1,obj2) && obj1.collidingWith(managedObjects.get(j))){
                         obj1.collision(obj2, deltaT);
                         obj2.collision(obj1, deltaT);
                     }
@@ -274,5 +276,6 @@ public class EngineManager {
             managedObjects.get(i).postGraphicUpdate(deltaT);
         }
     }
+
 
 }

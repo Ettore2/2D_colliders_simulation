@@ -4,7 +4,7 @@ public class Rotation3D extends Size3D{
 
     //constructors
     public Rotation3D(double x, double y, double z){
-        set(x, y, z);
+        set(x%360, y%360, z%360);
 
     }
     public Rotation3D(){
@@ -17,7 +17,7 @@ public class Rotation3D extends Size3D{
     }
     public Rotation3D(Rotation3D r){
         if(r != null){
-            set(r.x, r.y, r.z);
+            set(r.x%360, r.y%360, r.z%360);
         }else {
             set(0,0,0);
         }
@@ -28,7 +28,7 @@ public class Rotation3D extends Size3D{
     //other methods
     public void set(Rotation3D r){
         if(r != null){
-            set(r.x, r.y, r.z);
+            set(r.x%360, r.y%360, r.z%360);
         }else {
             set(0,0,0);
         }
@@ -40,9 +40,9 @@ public class Rotation3D extends Size3D{
 
     }
     public void add(Rotation3D r){
-        this.x += r.x;
-        this.y += r.y;
-        this.z += r.z;
+        this.x = (this.x+r.x)%360;
+        this.y = (this.x+r.y)%360;
+        this.z = (this.x+r.z)%360;
     }
     public Rotation3D sum(double x, double y, double z){
         return super.sum(x,y,z).toRotation();
@@ -63,7 +63,7 @@ public class Rotation3D extends Size3D{
 
     }
     public Rotation3D diffAbs(double x, double y, double z){
-        return super.diffAbs(x,y,z).toRotation();
+        return super.diffAbs(x%360,y%360,z%360).toRotation();
 
     }
     public Rotation3D diffAbs(Rotation3D r){
@@ -88,7 +88,7 @@ public class Rotation3D extends Size3D{
         if(r == null){
             return false;
         }
-        return equals(r.x,r.y,r.z,toll);
+        return equals(r.x%360,r.y%360,r.z%360,toll);
 
     }
 

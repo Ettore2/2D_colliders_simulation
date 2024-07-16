@@ -1,6 +1,6 @@
 package engine2D_V1;
 
-import static engine2D_V1.EngineObjectModel.*;
+import engine2D_V1.EngineObjectModel.*;
 
 
 public abstract class Collider2D implements HaveTag {

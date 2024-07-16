@@ -150,6 +150,10 @@ public abstract class ParticlesCreator extends EngineEntityModel{
     public void start(){
         paused = false;
     }
+    public void reset(){
+        timerLife = 0;
+
+    }
     public void applyAccelerationWithForceRotation(boolean b) {
         this.applyAccelerationWithForceRotation = b;
 
