@@ -9,7 +9,7 @@ public class Function {
 
 
     //constructors
-    public Function(Point3D rotCenter, double degrees, Point3D p1, Point3D p2){
+    public Function(Point3D rotCenter, double rotDegrees, Point3D p1, Point3D p2){
         if(Math.abs(p1.x - p2.x) < TOLLERANCE){
             this.m = null;
             this.q = p1.x;
@@ -21,11 +21,16 @@ public class Function {
             this.q = p1.y-m*p1.x;
         }
 
-        rotate(rotCenter,degrees);
+        rotate(rotCenter,rotDegrees);
 
     }
     public Function(Point3D p1, Point3D p2){
         this(null,0,p1,p2);
+
+    }
+    public Function(Double m,double q){
+        this.m = m;
+        this.q = q;
 
     }
 
@@ -34,7 +39,7 @@ public class Function {
     public void rotate(Point3D rotCenter, double degrees){
         if(degrees != 0){
             if(m != null){
-                setRotation(rotCenter, (double) (degrees+Math.toDegrees(Math.atan2(m,1))));
+                setRotation(rotCenter, degrees+Math.toDegrees(Math.atan2(m,1)));
             }else {
                 setRotation(rotCenter, degrees + 90);
             }
@@ -52,8 +57,8 @@ public class Function {
             rotCenter = new Point3D(0,0,0);
         }
 
-        double distance = distance(rotCenter);
-        Point3D newP = new Point3D((double) (distance*Math.cos(Math.toRadians(degrees))), (double) (distance*Math.sin(Math.toRadians(degrees))),0);
+        double distance = distance2D(rotCenter);
+        Point3D newP = new Point3D(rotCenter.x+distance*Math.cos(Math.toRadians(degrees)), rotCenter.y+distance*Math.sin(Math.toRadians(degrees)),0);
 
         if(Math.abs(degrees%180 - 90) < TOLLERANCE){
             m = null;
@@ -62,7 +67,7 @@ public class Function {
             m = 0d;
             q = newP.y;
         }else {
-            m = (double)Math.tan(Math.toRadians(degrees));
+            m = Math.tan(Math.toRadians(degrees));
             q = newP.y - m*newP.x;
         }
     }
@@ -155,8 +160,12 @@ public class Function {
             return new Point3D(x, getImage(x),0);
         }
     }
-    public double distance(Point3D p){
+    public double distance2D(Point3D p){
         return distancePoint(p).distance2D(p);
+
+    }
+    public Function copy(){
+        return new Function(this.m, this.q);
 
     }
 

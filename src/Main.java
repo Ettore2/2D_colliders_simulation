@@ -198,6 +198,7 @@ public class Main extends JFrame{
                     if (e.getKeyChar() == 'e') {
                         player1.inp2 = true;
                     }
+
                     if (e.getKeyChar() == 'j') {
                         player2.inpL = true;
                     }

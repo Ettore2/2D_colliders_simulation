@@ -4,7 +4,7 @@ import static engine2D_V1.EngineObjectModel.*;
 
 public class BoxCollider extends Collider2D {
     public static final int FUNCTION_UP = 0,FUNCTION_RIGHT = 1,FUNCTION_DOWN = 2,FUNCTION_LEFT = 3;
-    public static final int POINT_UP_RIGHT = 0,POINT_DOWN_RIGHT = 1,POINT_DOWN_LEFT = 2,POINT_UP_LEFT = 3,POINT_CENTER = 4;
+    public static final int POINT_UP_LEFT = 0,POINT_UP_RIGHT = 1,POINT_DOWN_RIGHT = 2,POINT_DOWN_LEFT = 3,POINT_CENTER = 4;
     public static final int DIAGONAL_UP_LEFT_TO_DOWN_RIGHT = 0,DIAGONAL_DOWN_LEFT_TO_UP_RIGHT = 1;
 
 
@@ -18,6 +18,7 @@ public class BoxCollider extends Collider2D {
     }
     public BoxCollider(EngineObjectModel owner, Point3D center, Vector3D size) {
         this(owner, center, null, size);
+
     }
     public BoxCollider(EngineObjectModel owner, Point3D upLeftP, Point3D downRightP) {
         this(owner, new Point3D(upLeftP.x + (downRightP.x-upLeftP.x)/2,upLeftP.y + (downRightP.y-upLeftP.y)/2), null, new Vector3D(Math.abs(downRightP.x-upLeftP.x),Math.abs(downRightP.y-upLeftP.y),0));
@@ -132,14 +133,14 @@ public class BoxCollider extends Collider2D {
 
         return result;
     }
-    public Point3D[] getVertices(){
-        Function[] diagonals = getDiagonals();
+    public Point3D[] getVertices(Function[] diagonals){
         Point3D pos = getPositionAbs();
         double distance = Math.sqrt(size.x* size.x+size.y* size.y)/2;
         Point3D[] result = new Point3D[4];
         double rotation;
         //System.out.println("diagonals: "+diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m + "   " + diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m);
         //System.out.println("rotations: "+Math.toDegrees(Math.atan2(diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m,1))+"    "+Math.toDegrees(Math.atan2(diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m,1)));
+
 
         if(diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m != null){
             rotation = Math.atan2(diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT].m,1);
@@ -175,8 +176,12 @@ public class BoxCollider extends Collider2D {
         return result;
 
     }
-    public Point3D[] getPoints(){
-        Point3D[] vertices = getVertices();
+    public Point3D[] getVertices(){
+        return getVertices(getDiagonals());
+
+    }
+    public Point3D[] getPoints(Function[] diagonals){
+        Point3D[] vertices = getVertices(diagonals);
         Point3D[] points = new Point3D[vertices.length+1];
         for(int i = 0; i < vertices.length; i++){
             points[i] = vertices[i];
@@ -185,13 +190,17 @@ public class BoxCollider extends Collider2D {
         return points;
 
     }
+    public Point3D[] getPoints(){
+        return getPoints(getDiagonals());
+
+    }
     public Function[] getDiagonals(){
         Point3D pos = getPositionAbs();
         double rotation = getRotationAbs().z;
         Function fTmp;
         Function[] diagonals = new Function[2];
-        diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT] = new Function(null,rotation,pos,pos.sum(new Point3D(size.x, -size.y)));
-        diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT] = new Function(null,rotation,pos,pos.sum(new Point3D(size.x, size.y)));
+        diagonals[DIAGONAL_UP_LEFT_TO_DOWN_RIGHT] = new Function(pos,rotation,pos,pos.sum(new Point3D(size.x, -size.y)));
+        diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT] = new Function(pos,rotation,pos,pos.sum(new Point3D(size.x, size.y)));
 
         if(diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT].m == null){
             fTmp = diagonals[DIAGONAL_DOWN_LEFT_TO_UP_RIGHT];
@@ -226,12 +235,13 @@ public class BoxCollider extends Collider2D {
 
     //function-methods
     public Point3D getSegmentsCollision(Function f, double fMin, double fMax, Function g, double gMin, double gMax){
-
+        //System.out.println(f.toString()+"|"+fMin+"|"+fMax);
+        //System.out.println(g.toString()+"|"+gMin+"|"+gMax);
         Point3D p = f.getIntersection(g);
         if(p != null){
             //System.out.println(p.toString());
             if(f.m == null){
-                if(g.m != null){
+                if(g.m == null){
                     return p;
                 }else {
                     return p.y <= fMax && p.y >= fMin && p.x <= gMax && p.x >= gMin ? p : null;
@@ -246,8 +256,13 @@ public class BoxCollider extends Collider2D {
         }
         return null;
     }
-    public Point3D getSegmentsCollision(Point3D a1, Point3D a2, Function g, double gMin, double gMax){
-        return getSegmentsCollision(new Function(a1, a2),Math.min(a1.x,a2.x),Math.max(a1.x,a2.x),g, gMin, gMax);
+    public Point3D getSegmentsCollision(Function f, double fMin, double fMax, Point3D b1, Point3D b2){
+        Function g = new Function(b1, b2);
+        if(g.m == null){
+            b1 = new Point3D(b1.y,0);
+            b2 = new Point3D(b2.y,0);
+        }
+        return getSegmentsCollision(f, fMin, fMax,g,Math.min(b1.x,b2.x),Math.max(b1.x,b2.x));
     }
     public Point3D getSegmentsCollision(Point3D a1, Point3D a2, Point3D b1, Point3D b2){
         Function f = new Function(a1, a2), g = new Function(b1, b2);
@@ -346,15 +361,24 @@ public class BoxCollider extends Collider2D {
                 //System.out.println("fast false");
                 return false;
             }
-
-            Point3D[] myPoints = this.getPoints(), hisPoints = rectCol.getPoints();
+            Function[] myDiagonals = getDiagonals(), hisDiagonals = rectCol.getDiagonals();
+            Point3D[] myPoints = this.getPoints(myDiagonals), hisPoints = rectCol.getPoints(hisDiagonals);
 
             for(int i = 0; i < 2; i++){
+                Point3D a1 = myPoints[i],a2 = myPoints[i+2],b1 = hisPoints[i],b2 = hisPoints[i+2];
+                if(myDiagonals[i].m == null){
+                    a1 = new Point3D(a1.y,0);
+                    a2 = new Point3D(a2.y,0);
+                }
+                if(hisDiagonals[i].m == null){
+                    b1 = new Point3D(b1.y,0);
+                    b2 = new Point3D(b2.y,0);
+                }
+
                 for(int j = 0; j < 4; j++){
-                    if(getSegmentsCollision(myPoints[i],myPoints[i+2],hisPoints[j],hisPoints[(j+1)%4]) != null) {
-                        return true;
-                    }
-                    if(getSegmentsCollision(hisPoints[i],hisPoints[i+2],myPoints[j],myPoints[(j+1)%4]) != null){
+
+                    if(getSegmentsCollision(myDiagonals[i],Math.min(a1.x,a2.x),Math.max(a1.x,a2.x),hisPoints[j],hisPoints[(j+1)%4]) != null
+                            || getSegmentsCollision(hisDiagonals[i],Math.min(b1.x,b2.x),Math.max(b1.x,b2.x),myPoints[j],myPoints[(j+1)%4]) != null) {
                         return true;
                     }
                 }
@@ -401,7 +425,7 @@ public class BoxCollider extends Collider2D {
 
         }
 
-        if(col.getClass() == CircularCollider.class){
+        else if(col.getClass() == CircularCollider.class){
             CircularCollider circleCol = (CircularCollider)col;
             //System.out.println("rotation: "+rotation.z);
 
@@ -452,17 +476,17 @@ public class BoxCollider extends Collider2D {
                 }else {//non centred U_D
                     if(results[FUNCTION_UP]){//up
                         //System.out.println(1);
-                        return functions[FUNCTION_UP].distance(circleCenter) <= circleCol.radius;
+                        return functions[FUNCTION_UP].distance2D(circleCenter) <= circleCol.radius;
                     }else {//down
                         //System.out.println(2);
-                        return functions[FUNCTION_DOWN].distance(circleCenter) <= circleCol.radius;
+                        return functions[FUNCTION_DOWN].distance2D(circleCenter) <= circleCol.radius;
                     }
                 }
             }else {//non centred L_R
                 if(results[FUNCTION_RIGHT]){//to the right
                     if(results[FUNCTION_UP] != results[FUNCTION_DOWN]){//centred U_D
                         //System.out.println(3);
-                        return functions[FUNCTION_RIGHT].distance(circleCenter) <= circleCol.radius;
+                        return functions[FUNCTION_RIGHT].distance2D(circleCenter) <= circleCol.radius;
                     }else {//non centred U_D
                         if(results[FUNCTION_UP]){//up
                             //.out.println(4);
@@ -475,7 +499,7 @@ public class BoxCollider extends Collider2D {
                 }else {//to the left
                     if(results[FUNCTION_UP] != results[FUNCTION_DOWN]){//centred U_D
                         //System.out.println(6);
-                        return functions[FUNCTION_LEFT].distance(circleCenter) <= circleCol.radius;
+                        return functions[FUNCTION_LEFT].distance2D(circleCenter) <= circleCol.radius;
                     }else {//non centred U_D
                         if(results[FUNCTION_UP]){//up
                             //System.out.println(7);
