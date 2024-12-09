@@ -1,4 +1,4 @@
-import engine2D_V1.*;
+import engine2D.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,7 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 
-import engine2D_V1.Function;
+import engine2D.Function;
 
 public class Main extends JFrame{
     public static final int FRAME_WIDTH = 1000, FRAME_HEIGHT = 800;
@@ -22,7 +22,7 @@ public class Main extends JFrame{
 
         public MyCanvas(){
             this.objs = new Vector<>();
-            needRedraw = false;
+            needRedraw = true;
         }
 
 
@@ -145,7 +145,6 @@ public class Main extends JFrame{
 
                 }
 
-
                 needRedraw = false;
             }
         }
@@ -244,6 +243,8 @@ public class Main extends JFrame{
         canvas.setLocation(0,instructions.getY()+instructions.getHeight());
         canvas.setSize(FRAME_WIDTH,FRAME_HEIGHT-this.getY());
 
+        manager.updateManagedThings();
+        canvas.needRedraw = true;
         canvas.paint(canvas.getGraphics());
 
 

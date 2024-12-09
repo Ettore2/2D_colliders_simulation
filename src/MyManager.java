@@ -1,4 +1,4 @@
-import engine2D_V1.EngineManager;
+import engine2D.EngineManager;
 
 public class MyManager extends EngineManager {
     Main.MyCanvas canvas;

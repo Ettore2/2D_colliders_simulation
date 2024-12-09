@@ -1,4 +1,4 @@
-import engine2D_V1.*;
+import engine2D.*;
 
 public class Player extends EngineObjectModel {
     Point3D pos;
